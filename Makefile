@@ -10,3 +10,4 @@ format:
 	black services/*.py
 	black network/*.py
 	black utils/*.py
+	black state/*.py
