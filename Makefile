@@ -7,3 +7,4 @@ format:
 	black setup.py
 	black cli/*.py
 	black core/*.py
+	black services/*.py
