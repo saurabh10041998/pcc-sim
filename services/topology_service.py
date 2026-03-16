@@ -12,8 +12,10 @@ class TopologyService:
             raise RuntimeError("Topology already exists")
 
         network_gateway = subnet.split("/")[0][:-1] + "1"
+        mask = subnet.split("/")[1]
+        network_gateway_cidr = f"{network_gateway}/{mask}"
 
-        create_bridge(bridge, network_gateway)
+        create_bridge(bridge, network_gateway_cidr)
         topology = Topology(name=name, bridge=bridge, subnet=subnet)
         self.state.save_topology(topology)
         return topology
