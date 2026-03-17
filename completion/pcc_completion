@@ -5,9 +5,10 @@ _pcc_completion() {
     local cur prev words cword
     _init_completion || return
 
-    local commands="topology node"
+    local commands="topology node replay"
     local topology_cmds="create delete show"
     local node_cmds="add delete list shell"
+    local replay_cmds="start"
 
     case "${words[1]}" in
 
@@ -50,6 +51,21 @@ _pcc_completion() {
 
             esac
             ;;
+        replay)
+             if [[ $cword -eq 2 ]]; then
+                COMPREPLY=( $(compgen -W "${replay_cmds}" -- "$cur") )
+                return
+            fi
+
+             case "${words[2]}" in
+
+                start)
+                    COMPREPLY=( $(compgen -W "--node --pcap --rewrite" -- "$cur") )
+                    return
+                    ;;
+
+            esac
+             ;;
 
         *)
             COMPREPLY=( $(compgen -W "${commands}" -- "$cur") )
