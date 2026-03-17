@@ -50,7 +50,7 @@ class ReplayEngine:
         for packet in self._read_pcap():
             if IP in packet and TCP in packet and packet[TCP].dport == dport:
                 modified_packet = self.rewriter.apply(packet)
-                if (modified_packet & ACK) or (modified_packet & RSTACK):
+                if (modified_packet[TCP].flags & ACK) or (modified_packet[TCP].flags & RSTACK):
                     modified_packet[TCP].ack = self.recv_seq_num + self.recv_payload_len
 
                 valid_packets.append(modified_packet)
