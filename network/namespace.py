@@ -16,6 +16,9 @@ def create_namespace(namespace_name):
 def delete_namespace(namespace_name):
     result = subprocess.run(["ip", "netns", "list"], capture_output=True, text=True)
     existing_namespaces = result.stdout.splitlines()
+
+    existing_namespaces = [ns.split()[0] for ns in existing_namespaces]
+
     print(f"Existing namespaces: {existing_namespaces}")
 
     if namespace_name not in existing_namespaces:
