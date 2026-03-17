@@ -57,8 +57,10 @@ class ReplayEngine:
                         modified_packet[TCP].ack = (
                             self.recv_seq_num + self.recv_payload_len
                         )
-                del modified_packet[Ether]
-                valid_packets.append(modified_packet)
+                modified_ip_packet = IP(
+                    modified_packet[IP].__bytes__()[0 : modified_packet[IP].len]
+                )
+                valid_packets.append(modified_ip_packet)
             else:
                 if valid_packets:
                     self.send_packets(valid_packets)
