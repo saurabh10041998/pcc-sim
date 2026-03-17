@@ -19,8 +19,6 @@ def delete_namespace(namespace_name):
 
     existing_namespaces = [ns.split()[0] for ns in existing_namespaces]
 
-    print(f"Existing namespaces: {existing_namespaces}")
-
     if namespace_name not in existing_namespaces:
         print(f"Namespace '{namespace_name}' does not exist")
         return
