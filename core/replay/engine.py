@@ -57,7 +57,7 @@ class ReplayEngine:
                         modified_packet[TCP].ack = (
                             self.recv_seq_num + self.recv_payload_len
                         )
-
+                del modified_packet[Ether]
                 valid_packets.append(modified_packet)
             else:
                 if valid_packets:
