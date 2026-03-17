@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+_pcc_completion() {
+
+    local cur prev words cword
+    _init_completion || return
+
+    local commands="topology node"
+    local topology_cmds="create delete show"
+    local node_cmds="add delete list shell"
+
+    case "${words[1]}" in
+
+        topology)
+            if [[ $cword -eq 2 ]]; then
+                COMPREPLY=( $(compgen -W "${topology_cmds}" -- "$cur") )
+                return
+            fi
+
+            case "${words[2]}" in
+
+                create)
+                    COMPREPLY=( $(compgen -W "--name --bridge --subnet" -- "$cur") )
+                    return
+                    ;;
+
+            esac
+            ;;
+
+        node)
+            if [[ $cword -eq 2 ]]; then
+                COMPREPLY=( $(compgen -W "${node_cmds}" -- "$cur") )
+                return
+            fi
+
+            case "${words[2]}" in
+
+                add)
+                    COMPREPLY=( $(compgen -W "--name --ip --namespace" -- "$cur") )
+                    return
+                    ;;
+
+                delete|shell)
+
+                    local nodes=$(pcc node list 2>/dev/null | awk '{print $1}')
+
+                    COMPREPLY=( $(compgen -W "${nodes}" -- "$cur") )
+                    return
+                    ;;
+
+            esac
+            ;;
+
+        *)
+            COMPREPLY=( $(compgen -W "${commands}" -- "$cur") )
+            ;;
+    esac
+}
+
+complete -F _pcc_completion pcc
+
