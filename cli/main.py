@@ -2,6 +2,7 @@ import argparse
 
 from cli.topology import register_topology_parser
 from cli.node import register_node_parser
+from cli.replay import register_replay_parser
 
 
 def build_parser():
@@ -10,6 +11,7 @@ def build_parser():
 
     register_topology_parser(subparsers)
     register_node_parser(subparsers)
+    register_replay_parser(subparsers)
 
     return parser
 
