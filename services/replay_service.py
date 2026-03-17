@@ -14,7 +14,7 @@ class ReplayService:
         if not os.path.isfile(pcap):
             raise ValueError(f"PCAP file '{pcap}' does not exist")
 
-        topology = self.state_manager.get_topology()
+        topology = self.state_manager.load_topology()
         pcc_node = topology.get_node(node)
         if not pcc_node:
             raise ValueError(f"Node '{node}' not found in topology")
