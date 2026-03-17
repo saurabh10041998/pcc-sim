@@ -20,13 +20,14 @@ class NodeService:
 
         veth_host = f"veth-{name}"
         veth_peer = iface
+        gateway_ip = topology.subnet.split("/")[0][:-1] + "1"
+
         create_veth_pair(veth_host, veth_peer, namespace)
         attach_to_bridge(veth_host, topology.bridge)
+
         exec_in_namespace(namespace, f"ip addr add {ip}/24 dev {veth_peer}")
         exec_in_namespace(namespace, f"ip link set {veth_peer} up")
         exec_in_namespace(namespace, f"ip link set lo up")
-
-        gateway_ip = topology.subnet.split("/")[0][:-1] + "1"
         exec_in_namespace(namespace, f"ip route add default via {gateway_ip}")
 
         node = PCCNode(name=name, namespace=namespace, ip=ip, iface=iface)
