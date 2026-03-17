@@ -19,7 +19,8 @@ def register_replay_parser(subparsers):
     replay_parser = subparsers.add_parser(
         "replay", help="Replay recorded pcap file for PCCNode"
     )
-    start_parser = replay_parser.add_parser("start", help="Start replaying pcap file")
+    replay_subparsers = replay_parser.add_subparsers(dest="replay_command")
+    start_parser = replay_subparsers.add_parser("start", help="Start pcap replay")
     start_parser.add_argument("--node", required=True)
     start_parser.add_argument("--pcap", required=True)
     start_parser.add_argument(
