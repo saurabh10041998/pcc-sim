@@ -10,7 +10,9 @@ class ReplayService:
     def __init__(self):
         self.state_manager = StateManager()
 
-    def start(self, node: str, pcap: str, rewrite_rules: Dict[str, str]):
+    def start(
+        self, node: str, pcap: str, rewrite_rules: Dict[str, str], inner: bool = False
+    ):
         if not os.path.isfile(pcap):
             raise ValueError(f"PCAP file '{pcap}' does not exist")
 
@@ -19,12 +21,23 @@ class ReplayService:
         if not pcc_node:
             raise ValueError(f"Node '{node}' not found in topology")
 
-        engine = ReplayEngine(pcap=pcap, rewrite_rules=rewrite_rules)
+        if inner:
+            engine = ReplayEngine(pcap=pcap, rewrite_rules=rewrite_rules)
 
-        engine.attach_node(pcc_node)
-        try:
-            engine.start()
-        except Exception as e:
-            raise RuntimeError(f"Failed to start replay engine: {e}")
-        finally:
-            engine.stop()
+            engine.attach_node(pcc_node)
+            try:
+                engine.start()
+            except Exception as e:
+                raise RuntimeError(f"Failed to start replay engine: {e}")
+            finally:
+                engine.stop()
+        else:
+            prepare_rewrite_args = ""
+            for key, value in rewrite_rules.items():
+                prepare_rewrite_args += f" --rewrite {key}={value}"
+            # TODO: this might fail here as pcc executable might not be available in the current namespace,
+            # need to find a better way to handle this
+            exec_in_namespace(
+                pcc_node.namespace,
+                f"pcc replay start --node {pcc_node.name} --pcap {pcap} {prepare_rewrite_args} --inner",
+            )

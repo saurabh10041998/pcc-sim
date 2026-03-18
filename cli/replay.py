@@ -26,9 +26,14 @@ def register_replay_parser(subparsers):
     start_parser.add_argument(
         "--rewrite", action="append", help="rewrite rule format key=value"
     )
+    start_parser.add_argument(
+        "--inner", action="store_true", help="Play inside namespace"
+    )
     start_parser.set_defaults(func=replay_pcap)
 
 
 def replay_pcap(args):
     rewrite_rules = parse_rewrite_rules(args.rewrite) if args.rewrite else {}
-    replay_service.start(node=args.node, pcap=args.pcap, rewrite_rules=rewrite_rules)
+    replay_service.start(
+        node=args.node, pcap=args.pcap, rewrite_rules=rewrite_rules, inner=args.inner
+    )

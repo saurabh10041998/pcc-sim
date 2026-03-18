@@ -1,3 +1,4 @@
+import subprocess
 from typing import Dict
 from scapy.all import *
 
@@ -40,9 +41,26 @@ class ReplayEngine:
         dst_ip = self.rewriter.rules.get("dst_ip", src_ip)
         dport = int(self.rewriter.rules.get("dst_port"))
 
-        exec_in_namespace(
-            self.attached_node.namespace,
-            f"iptables -A OUTPUT -p tcp --tcp-flags RST RST -s {src_ip} -d {dst_ip} --dport {dport} -j DROP",
+        subprocess.run(
+            [
+                "iptables",
+                "-A",
+                "OUTPUT",
+                "-p",
+                "tcp",
+                "--tcp-flags",
+                "RST",
+                "RST",
+                "-s",
+                src_ip,
+                "-d",
+                dst_ip,
+                "--dport",
+                str(dport),
+                "-j",
+                "DROP",
+            ],
+            check=True,
         )
 
         valid_packets = []
@@ -77,9 +95,26 @@ class ReplayEngine:
         dst_ip = self.rewriter.rules.get("dst_ip", src_ip)
         dport = int(self.rewriter.rules.get("dst_port"))
 
-        exec_in_namespace(
-            self.attached_node.namespace,
-            f"iptables -D OUTPUT -p tcp --tcp-flags RST RST -s {src_ip} -d {dst_ip} --dport {dport} -j DROP",
+        subprocess.run(
+            [
+                "iptables",
+                "-D",
+                "OUTPUT",
+                "-p",
+                "tcp",
+                "--tcp-flags",
+                "RST",
+                "RST",
+                "-s",
+                src_ip,
+                "-d",
+                dst_ip,
+                "--dport",
+                str(dport),
+                "-j",
+                "DROP",
+            ],
+            check=True,
         )
 
     def _read_pcap(self):

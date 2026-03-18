@@ -66,3 +66,40 @@ pcc-sim
     └── test_replay.py
 
 ```
+
+### Examples
+Create the topology
+```bash
+pcc topology create --name test --bridge br-test --subnet '10.66.3.0/24'
+```
+
+Create a node
+```bash
+pcc node add --name pcc1 --namespace pcc1 --ip 10.66.3.154
+```
+
+Replay for a node
+```bash
+pcc node shell pcc1   # switch to pcc1 namespace
+pcc replay start --node pcc1 --pcap sample.pcap --rewrite 'dst_ip=10.190.201.192' --rewrite 'src_port=9002' --rewrite 'dst_port=4189' 
+```
+
+List node
+```bash
+pcc node list
+```
+
+Show topology
+```bash
+pcc topology show
+```
+
+Delete the node
+```bash
+pcc node delete pcc1
+```
+
+Delete topology
+```bash
+pcc topology delete
+```
